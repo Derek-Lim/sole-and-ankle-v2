@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import Logo from '../Logo';
-import SuperHeader from '../SuperHeader';
+import { COLORS, WEIGHTS } from "../../constants";
+import Logo from "../Logo";
+import SuperHeader from "../SuperHeader";
 
 const Header = () => {
   // Our site features two visual headers, but they should be
@@ -12,7 +12,9 @@ const Header = () => {
     <header>
       <SuperHeader />
       <MainHeader>
-        <Logo />
+        <Side>
+          <Logo />
+        </Side>
         <Nav>
           <NavLink href="/sale">Sale</NavLink>
           <NavLink href="/new">New&nbsp;Releases</NavLink>
@@ -21,6 +23,7 @@ const Header = () => {
           <NavLink href="/kids">Kids</NavLink>
           <NavLink href="/collections">Collections</NavLink>
         </Nav>
+        <Side />
       </MainHeader>
     </header>
   );
@@ -28,17 +31,20 @@ const Header = () => {
 
 const MainHeader = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 0 32px;
+  align-items: baseline;
+  padding: 18px 32px;
+  height: 4.5rem;
   border-bottom: 1px solid ${COLORS.gray[300]};
-  height: 72px;
 `;
 
 const Nav = styled.nav`
   display: flex;
   gap: 48px;
+  padding: 0 48px;
+`;
+
+const Side = styled.div`
+  flex: 1;
 `;
 
 const NavLink = styled.a`
