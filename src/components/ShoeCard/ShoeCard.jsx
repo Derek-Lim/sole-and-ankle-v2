@@ -1,9 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-import { COLORS, WEIGHTS } from '../../constants';
-import { formatPrice, pluralize, isNewShoe } from '../../utils';
-import Spacer from '../Spacer';
+import { COLORS, WEIGHTS } from "../../constants";
+import { formatPrice, pluralize, isNewShoe } from "../../utils";
+import Spacer from "../Spacer";
 
 const ShoeCard = ({
   slug,
@@ -31,6 +31,21 @@ const ShoeCard = ({
       ? 'new-release'
       : 'default'
 
+  const variantProps = {
+    "on-sale": {
+      tagText: "Sale",
+      backgroundColor: "#C5295D",
+    },
+    "new-release": {
+      tagText: "Just Released!",
+      backgroundColor: "#6868D9",
+    },
+    default: {
+      tagText: null,
+      backgroundColor: null,
+    },
+  };
+
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
@@ -40,15 +55,35 @@ const ShoeCard = ({
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price crossedOut={variant === "on-sale"}>{formatPrice(price)}</Price>
+          {salePrice === null || (
+            <SalePrice>{formatPrice(salePrice)}</SalePrice>
+          )}
         </Row>
         <Row>
-          <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
         </Row>
+        {variant === "default" || (
+          <Tag backgroundColor={variantProps[variant].backgroundColor}>
+            {variantProps[variant].tagText}
+          </Tag>
+        )}
       </Wrapper>
     </Link>
   );
 };
+
+const Tag = styled.span`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  border: solid;
+  font-weight: 700;
+  border-radius: 2px;
+  padding: 7px 9px 9px 11px;
+  color: white;
+  background-color: ${(props) => props.backgroundColor};
+`;
 
 const Link = styled.a`
   text-decoration: none;
@@ -66,6 +101,9 @@ const Image = styled.img`
 `;
 
 const Row = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
   font-size: 1rem;
 `;
 
@@ -74,13 +112,24 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  text-decoration: ${(props) => {
+    if (props.crossedOut) return "line-through";
+    return "none";
+  }};
+  color: ${(props) => {
+    if (props.crossedOut) return COLORS.gray[700];
+  }};
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
 `;
 
 const SalePrice = styled.span`
+  position: absolute;
+  right: 0;
+  top: 25px;
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
 `;
