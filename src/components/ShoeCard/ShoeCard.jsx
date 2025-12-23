@@ -31,59 +31,37 @@ const ShoeCard = ({
       ? 'new-release'
       : 'default'
 
-  const variantProps = {
-    "on-sale": {
-      tagText: "Sale",
-      backgroundColor: "#C5295D",
-    },
-    "new-release": {
-      tagText: "Just Released!",
-      backgroundColor: "#6868D9",
-    },
-    default: {
-      tagText: null,
-      backgroundColor: null,
-    },
-  };
-
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
+          {variant === "on-sale" && <SaleFlag>Sale</SaleFlag>}
+          {variant === "new-release" && <NewFlag>Just released!</NewFlag>}
         </ImageWrapper>
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price crossedOut={variant === "on-sale"}>{formatPrice(price)}</Price>
-          {salePrice === null || (
-            <SalePrice>{formatPrice(salePrice)}</SalePrice>
-          )}
+          <Price
+            style={{
+              "--color": variant === "on-sale" ? COLORS.gray[700] : undefined,
+              "--text-decoration":
+                variant === "on-sale" ? "line-through" : undefined,
+            }}
+          >
+            {formatPrice(price)}
+          </Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize("Color", numOfColors)}</ColorInfo>
+          {variant === "on-sale" ? (
+            <SalePrice>{formatPrice(salePrice)}</SalePrice>
+          ) : undefined}
         </Row>
-        {variant === "default" || (
-          <Tag backgroundColor={variantProps[variant].backgroundColor}>
-            {variantProps[variant].tagText}
-          </Tag>
-        )}
       </Wrapper>
     </Link>
   );
 };
-
-const Tag = styled.span`
-  position: absolute;
-  top: 12px;
-  right: -4px;
-  border: solid;
-  font-weight: 700;
-  border-radius: 2px;
-  padding: 7px 9px 9px 11px;
-  color: white;
-  background-color: ${(props) => props.backgroundColor};
-`;
 
 const Link = styled.a`
   text-decoration: none;
@@ -98,13 +76,13 @@ const ImageWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
+  border-radius: 16px 16px 4px 4px;
 `;
 
 const Row = styled.div`
-  position: relative;
+  font-size: 1rem;
   display: flex;
   justify-content: space-between;
-  font-size: 1rem;
 `;
 
 const Name = styled.h3`
@@ -113,13 +91,8 @@ const Name = styled.h3`
 `;
 
 const Price = styled.span`
-  text-decoration: ${(props) => {
-    if (props.crossedOut) return "line-through";
-    return "none";
-  }};
-  color: ${(props) => {
-    if (props.crossedOut) return COLORS.gray[700];
-  }};
+  color: var(--color);
+  text-decoration: var(--text-decoration);
 `;
 
 const ColorInfo = styled.p`
@@ -127,11 +100,28 @@ const ColorInfo = styled.p`
 `;
 
 const SalePrice = styled.span`
-  position: absolute;
-  right: 0;
-  top: 25px;
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const Flag = styled.div`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 10px;
+  font-size: ${14 / 16}rem;
+  font-weight: ${WEIGHTS.bold};
+  color: ${COLORS.white};
+  border-radius: 2px;
+`;
+
+const SaleFlag = styled(Flag)`
+  background-color: ${COLORS.primary};
+`;
+const NewFlag = styled(Flag)`
+  background-color: ${COLORS.secondary};
 `;
 
 export default ShoeCard;
